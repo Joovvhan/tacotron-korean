@@ -10,8 +10,12 @@ class Hyperparams:
 	nsc_sec = 0.1
 	nov_sec = 0.05
 	n_mels = 80
+	db_limit = -60
+	offset = 2
+	
 	eps = 1e-5
 	max_db = 100
 	embed_size = 256
 	num_k_filter = embed_size//2
 	K = 16
+	
