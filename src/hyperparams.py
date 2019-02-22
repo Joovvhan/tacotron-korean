@@ -7,6 +7,7 @@ class Hyperparams:
 	mels_dir = 'D:/korean-single-speaker-speech-dataset/kss/mels'
 	mags_dir = 'D:/korean-single-speaker-speech-dataset/kss/mags'
 	transcript_pos = 'D:/korean-single-speaker-speech-dataset/kss/transcript.txt'
+	fs = 44100/2
 	nsc_sec = 0.1
 	nov_sec = 0.05
 	n_mels = 80
@@ -15,6 +16,8 @@ class Hyperparams:
 	dropout_rate = 0.5
 	
 	r = 5
+	
+	lr = 0.001
 	
 	eps = 1e-5
 	max_db = 100
