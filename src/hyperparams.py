@@ -11,7 +11,8 @@ class Hyperparams:
 	nsc_sec = 0.1
 	nov_sec = 0.05
 	n_mels = 80
-	db_limit = -60
+	# db_limit = -60
+	db_limit = -80
 	offset = 2
 	dropout_rate = 0.5
 	
