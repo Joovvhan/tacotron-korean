@@ -19,9 +19,15 @@ class Hyperparams:
 	r = 5
 	
 	lr = 0.001
+
+	# batch_size = 32
+	# group_size = 8
+
+	batch_size = 4
+	group_size = 2
 	
-	eps = 1e-5
-	max_db = 100
+	eps = 1e-8
+	max_db = 160
 	embed_size = 256
 	num_prenet_node_1 = 256
 	num_prenet_node_2 = 128
