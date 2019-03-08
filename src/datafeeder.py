@@ -9,23 +9,35 @@ import tensorflow as tf
 
 class DataFeeder(threading.Thread):
 
-	def __init__(self, metadata):
+	def __init__(self, metadata, coordinator):
 		super(DataFeeder, self).__init__()
 		self._metadata = metadata
 		self._cur = 0
+		self._coordinator = coordinator
 
 		self._placeholders = [
-			tf.placeholder(tf.int32, [None, None], name='text'),
-			tf.placeholder(tf.float32, [None, None, None], name='mel'),
-			tf.placeholder(tf.float32, [None, None, None], name='mag'),
-			tf.placeholder(tf.int32, [None], name='text_length'),
-		]
+			tf.placeholder(tf.int32, [None, None], name='texts'),
+			tf.placeholder(tf.float32, [None, None, None], name='mels'),
+			tf.placeholder(tf.float32, [None, None, None], name='mags'),
+			tf.placeholder(tf.int32, [None], name='text_lengths'),
+		] # Plural form of name would be more appropriate since this placeholder represents a batch
 
-	def start_thread(self):
+		queue = tf.FIFOQueue(hp.queue_size, [tf.int32, tf.float32, tf.float32, tf.int32], name='input_queue')
+		self._enqueue_op = queue.enqueue(self._placeholders)
+
+
+	def start_thread(self, session):
+		self._session = session
 		self.start()
 
 	def run(self):
-		print(os.getpid())
+		try:
+			while not self._coordinator.should_stop():
+				self._load_next_group()
+		except Exception as e:
+			traceback.print_exc()
+			self._coodinator.request_stop(e)
+
 
 	def _load_wav(self, fname):
 		fpath = os.path.join(hp.data_dir, fname)
@@ -151,11 +163,11 @@ class DataFeeder(threading.Thread):
 
 		random.shuffle(batches)
 
-		# for batch in batches:
-		# 	feed_dict = dict(zip(self._placeholders, self._prepare_batch(batch)))
+		for batch in batches:
+			feed_dict = dict(zip(self._placeholders, self._prepare_batch(batch)))
+			qued = self.session.run(self._enqueue_op, feed_dict=feed_dict)
 
-		# return batches
-		return self._prepare_batch(batches[0])
+		return qued
 
 	def _prepare_batch(self, batch):
 		random.shuffle(batch)

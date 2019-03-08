@@ -15,6 +15,8 @@ class Hyperparams:
 	db_limit = -80
 	offset = 2
 	dropout_rate = 0.5
+
+	queue_size = 8
 	
 	r = 5
 	
@@ -27,7 +29,7 @@ class Hyperparams:
 	group_size = 2
 	
 	eps = 1e-8
-	max_db = 160
+	max_db = 160 # 20 * log10(eps) == -160
 	embed_size = 256
 	num_prenet_node_1 = 256
 	num_prenet_node_2 = 128
