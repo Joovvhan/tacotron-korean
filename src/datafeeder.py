@@ -2,6 +2,7 @@ import threading
 import os
 import librosa
 import random
+import traceback
 from hyperparams import Hyperparams as hp
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +25,14 @@ class DataFeeder(threading.Thread):
 
 		queue = tf.FIFOQueue(hp.queue_size, [tf.int32, tf.float32, tf.float32, tf.int32], name='input_queue')
 		self._enqueue_op = queue.enqueue(self._placeholders)
-
+		self.texts, self.mels, self.mags, self.text_lengths = queue.dequeue()
+		# Shape is unknown when dequeued
+		# Why do I have to dequeue placeholders? Why do not just I reasign them.
+		# May be because I cannot reasign tf placeholder with a same name.
+		self.texts.set_shape(self._placeholders[0].shape)
+		self.mels.set_shape(self._placeholders[1].shape)
+		self.mags.set_shape(self._placeholders[2].shape)
+		self.text_lengths.set_shape(self._placeholders[3].shape)
 
 	def start_thread(self, session):
 		self._session = session
@@ -36,7 +44,7 @@ class DataFeeder(threading.Thread):
 				self._load_next_group()
 		except Exception as e:
 			traceback.print_exc()
-			self._coodinator.request_stop(e)
+			self._coordinator.request_stop(e)
 
 
 	def _load_wav(self, fname):
@@ -165,7 +173,7 @@ class DataFeeder(threading.Thread):
 
 		for batch in batches:
 			feed_dict = dict(zip(self._placeholders, self._prepare_batch(batch)))
-			qued = self.session.run(self._enqueue_op, feed_dict=feed_dict)
+			qued = self._session.run(self._enqueue_op, feed_dict=feed_dict)
 
 		return qued
 

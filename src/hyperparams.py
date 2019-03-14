@@ -33,6 +33,9 @@ class Hyperparams:
 	embed_size = 256
 	num_prenet_node_1 = 256
 	num_prenet_node_2 = 128
+
+	num_prenet_nodes = [256, 128]
+
 	num_k_filter = embed_size//2
 	num_conv1d_proj_filter = embed_size//2
 	size_conv1d_proj_filter = 3
