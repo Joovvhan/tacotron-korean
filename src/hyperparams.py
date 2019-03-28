@@ -25,8 +25,8 @@ class Hyperparams:
 	# batch_size = 32
 	# group_size = 8
 
-	batch_size = 4
-	group_size = 2
+	batch_size = 8
+	group_size = 4
 	
 	eps = 1e-8
 	max_db = 160 # 20 * log10(eps) == -160
